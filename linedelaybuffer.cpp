@@ -1,4 +1,4 @@
-//  nbudstee
+//  linedelaybuffer
 //
 //  WEBSITE: https://github.com/JGRennison/linedelaybuffer
 //
