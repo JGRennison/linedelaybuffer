@@ -31,6 +31,12 @@
 #include <getopt.h>
 #include <vector>
 
+#ifndef VERSION_STRING
+#define VERSION_STRING __DATE__ " " __TIME__
+#endif
+const char version_string[] = "linedelaybuffer " VERSION_STRING;
+const char authors[] = "Written by Jonathan G. Rennison <j.g.rennison@gmail.com>";
+
 struct buffer_storage {
 	char *data;
 	size_t length;
@@ -52,15 +58,21 @@ void buffer_write(const char *line, size_t len) {
 	}
 }
 
-void usage_msg() {
-	fprintf(stderr,
+void usage_msg(FILE *stream) {
+	fprintf(stream,
 			"Usage: linedelaybuffer [options] LINES\n"
 			"\tCopy STDIN to STDOUT linewise, storing LINES lines.\n"
 			"\tEach input line is output only after receiving a further LINES lines.\n"
+			"\tReads and writes are blocking.\n"
 			"Options:\n"
 			"-f, --flush\n"
 			"\tFlush leftover lines at the end of the input.\n"
-			"\tOtherwise the last LINES input lines will be discarded.\n");
+			"\tOtherwise the last LINES input lines will be discarded.\n"
+			"-h, --help\n"
+			"\tShow this help\n"
+			"-V, --version\n"
+			"\tShow version information\n"
+		);
 }
 
 void advance_buffer() {
@@ -73,6 +85,7 @@ void advance_buffer() {
 static struct option options[] = {
 	{ "help",          no_argument,        NULL, 'h' },
 	{ "flush",         no_argument,        NULL, 'f' },
+	{ "version",       no_argument,        NULL, 'V' },
 	{ NULL, 0, 0, 0 }
 };
 
@@ -84,15 +97,20 @@ int main(int argc, char **argv) {
 
 	int n = 0;
 	while (n >= 0) {
-		n = getopt_long(argc, argv, "hf", options, NULL);
+		n = getopt_long(argc, argv, "hfV", options, NULL);
 		if (n < 0) continue;
 		switch (n) {
 		case 'f':
 			flush_at_end = true;
 			break;
-		case '?':
+		case 'V':
+			fprintf(stdout, "%s\n\n%s\n", version_string, authors);
+			exit(EXIT_SUCCESS);
 		case 'h':
-			usage_msg();
+			usage_msg(stdout);
+			exit(EXIT_SUCCESS);
+		case '?':
+			usage_msg(stderr);
 			exit(EXIT_FAILURE);
 		}
 	}
@@ -113,7 +131,7 @@ int main(int argc, char **argv) {
 	}
 
 	if(buffer_count == 0) {
-		usage_msg();
+		usage_msg(stderr);
 		exit(EXIT_FAILURE);
 	}
 
