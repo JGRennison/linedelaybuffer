@@ -14,7 +14,7 @@ clean:
 	rm -f linedelaybuffer linedelaybuffer.1
 
 install: linedelaybuffer
-	install -m 755 linedelaybuffer /usr/local/bin/
+	install -D -m 755 linedelaybuffer /usr/local/bin/linedelaybuffer
 
 HELP2MANOK := $(shell help2man --version 2>/dev/null)
 ifdef HELP2MANOK
@@ -28,7 +28,7 @@ install: install-man
 .PHONY: install-man
 
 install-man: linedelaybuffer.1
-	install -m 644 linedelaybuffer.1 /usr/local/share/man/man1/
+	install -D -m 644 linedelaybuffer.1 /usr/local/share/man/man1/linedelaybuffer.1
 	-mandb -pq
 
 else
