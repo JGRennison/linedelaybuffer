@@ -16,6 +16,9 @@ clean:
 install: linedelaybuffer
 	install -D -m 755 linedelaybuffer /usr/local/bin/linedelaybuffer
 
+uninstall:
+	rm -f /usr/local/bin/linedelaybuffer /usr/local/share/man/man1/linedelaybuffer.1
+
 HELP2MANOK := $(shell help2man --version 2>/dev/null)
 ifdef HELP2MANOK
 all: linedelaybuffer.1
