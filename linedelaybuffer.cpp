@@ -46,7 +46,7 @@ struct buffer_storage {
 		: data(NULL), length(0), buffer_length(0) { }
 };
 
-unsigned long buffer_count = 0;
+long buffer_count = -1;
 std::vector<buffer_storage> buffers;
 unsigned int next_buffer = 0;
 
@@ -121,18 +121,25 @@ int main(int argc, char **argv) {
 	sigaction(SIGPIPE, &new_action, 0);
 
 	if(optind == argc - 1) {
-		unsigned long s = 0;
+		long s = 0;
 		char *end = NULL;
-		s = strtoul(argv[optind], &end, 10);
+		s = strtol(argv[optind], &end, 10);
 
 		if(end && *end == 0) {
 			buffer_count = s;
 		}
 	}
 
-	if(buffer_count == 0) {
+	if(buffer_count < 0) {
 		usage_msg(stderr);
 		exit(EXIT_FAILURE);
+	}
+	else if(buffer_count == 0) {
+		// Don't buffer anything, just write each line as it appears
+		while((read = getline(&line, &len, stdin)) != -1) {
+			buffer_write(line, len);
+		}
+		exit(EXIT_SUCCESS);
 	}
 
 	buffers.resize(buffer_count);
