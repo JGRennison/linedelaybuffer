@@ -1,0 +1,13 @@
+Source: linedelaybuffer
+Maintainer: Jonathan G Rennison <j.g.rennison@gmail.com>
+Section: utils
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9), help2man
+
+Package: linedelaybuffer
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Line delay buffer
+ Copy STDIN to STDOUT linewise, storing a fixed number of lines.
+ Each input line is output only after receiving a further fixed number of lines.

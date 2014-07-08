@@ -1,6 +1,8 @@
+prefix ?= /usr/local
+
 all: linedelaybuffer
 
-VERSION_STRING := $(shell git describe --always --dirty=-m 2>/dev/null || date "+%F %T %z" 2>/dev/null)
+VERSION_STRING := $(shell cat version 2>/dev/null || git describe --tags --always --dirty=-m 2>/dev/null || date "+%F %T %z" 2>/dev/null)
 ifdef VERSION_STRING
 CVFLAGS := -DVERSION_STRING='"${VERSION_STRING}"'
 endif
@@ -8,16 +10,19 @@ endif
 linedelaybuffer: linedelaybuffer.cpp
 	g++ linedelaybuffer.cpp -Wall -Wextra -O3 -g -o linedelaybuffer ${CVFLAGS}
 
-.PHONY: install all clean
+.PHONY: install all clean dumpversion
+
+dumpversion:
+	@echo $(VERSION_STRING)
 
 clean:
 	rm -f linedelaybuffer linedelaybuffer.1
 
 install: linedelaybuffer
-	install -D -m 755 linedelaybuffer /usr/local/bin/linedelaybuffer
+	install -D -m 755 linedelaybuffer $(DESTDIR)$(prefix)/bin/linedelaybuffer
 
 uninstall:
-	rm -f /usr/local/bin/linedelaybuffer /usr/local/share/man/man1/linedelaybuffer.1
+	rm -f $(DESTDIR)$(prefix)/bin/linedelaybuffer $(DESTDIR)$(prefix)/share/man/man1/linedelaybuffer.1
 
 HELP2MANOK := $(shell help2man --version 2>/dev/null)
 ifdef HELP2MANOK
@@ -31,7 +36,7 @@ install: install-man
 .PHONY: install-man
 
 install-man: linedelaybuffer.1
-	install -D -m 644 linedelaybuffer.1 /usr/local/share/man/man1/linedelaybuffer.1
+	install -D -m 644 linedelaybuffer.1 $(DESTDIR)$(prefix)/share/man/man1/linedelaybuffer.1
 	-mandb -pq
 
 else
