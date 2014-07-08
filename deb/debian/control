@@ -2,7 +2,10 @@ Source: linedelaybuffer
 Maintainer: Jonathan G Rennison <j.g.rennison@gmail.com>
 Section: utils
 Priority: optional
-Standards-Version: 3.9.2
+Standards-Version: 3.9.5
+Homepage: https://launchpad.net/~j-g-rennison/+archive/linedelaybuffer
+Vcs-Browser: https://github.com/JGRennison/linedelaybuffer
+Vcs-Git: https://github.com/JGRennison/linedelaybuffer.git
 Build-Depends: debhelper (>= 9), help2man
 
 Package: linedelaybuffer

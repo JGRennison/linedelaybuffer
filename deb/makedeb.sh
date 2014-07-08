@@ -11,7 +11,7 @@ DBUILDOPTS="-sa"
 
 set -e
 
-while getopts ":d:v:o:Snu" opt; do
+while getopts ":d:v:o:Snu:" opt; do
   case $opt in
     d)
       DIST="$OPTARG"
@@ -29,10 +29,10 @@ while getopts ":d:v:o:Snu" opt; do
       NONEWORIG=1
       ;;
     u)
-      "$0" -S -d trusty -v -0~ppa1~trusty1
-      "$0" -n -S -d saucy -v -0~ppa1~saucy1
-      "$0" -n -S -d precise -v -0~ppa1~precise1
-      "$0" -n -S -d quantal -v -0~ppa1~quantal1
+      "$0" -S -d trusty -v -0~ppa"$OPTARG"~trusty1
+      "$0" -n -S -d saucy -v -0~ppa"$OPTARG"~saucy1
+      "$0" -n -S -d precise -v -0~ppa"$OPTARG"~precise1
+      "$0" -n -S -d utopic -v -0~ppa"$OPTARG"~utopic1
       exit 0
       ;;
     ?)
@@ -62,8 +62,9 @@ for i in $FILES; do
 done
 echo "$VERSION" > "$DIR"/version
 
-if [ -z "$NONEWORIG" ]; then
-	tar -C "$OUTDIR" -czf "$OUTDIR"/"${P}_${ORIGV}.orig.tar.gz" "$P-$ORIGV"
+ORIGTAR="$OUTDIR"/"${P}_${ORIGV}.orig.tar.gz"
+if [ -z "$NONEWORIG" -a ! -e "$ORIGTAR" ]; then
+	tar -C "$OUTDIR" -cvzf "$ORIGTAR" "$P-$ORIGV"
 fi
 
 cp -R debian "$DIR"/
